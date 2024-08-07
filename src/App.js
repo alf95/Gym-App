@@ -32,13 +32,13 @@ const App = () => {
   return (
     <Router>
       <div className="container mx-auto p-4">
-        <header className="bg-gray-800 text-white p-4 text-center text-3xl font-bold">
+        <header className="bg-blue-600 text-white p-4 text-center text-3xl font-bold rounded-lg shadow-md">
           Gym Exercise App
         </header>
         <nav className="flex justify-center space-x-4 my-4">
-          <Link to="/" className="text-blue-500 hover:text-blue-700">Home</Link>
-          <Link to="/admin" className="text-blue-500 hover:text-blue-700">Admin</Link>
-          <button onClick={handleLogout} className="text-blue-500 hover:text-blue-700">Logout</button>
+          <Link to="/" className="text-blue-600 hover:text-blue-800 font-semibold">Home</Link>
+          <Link to="/admin" className="text-blue-600 hover:text-blue-800 font-semibold">Admin</Link>
+          <button onClick={handleLogout} className="text-blue-600 hover:text-blue-800 font-semibold">Logout</button>
         </nav>
         <Routes>
           <Route path="/" element={<ExerciseList exercises={exercises} />} />
