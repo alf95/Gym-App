@@ -1,70 +1,124 @@
-# Getting Started with Create React App
+# Gym Exercise App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project is a Gym Exercise App built with React, Firebase Firestore, and Firebase Authentication. The app allows users to view a list of exercises, view details for each exercise, and, if authenticated, add new exercises with associated videos.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- View a list of exercises.
+- View details of an individual exercise, including a video demonstration.
+- Admin authentication to add new exercises.
+- Upload and store exercise videos using Firebase Storage.
+- Secure access to admin functionalities using Firebase Authentication.
 
-### `npm start`
+## Prerequisites
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- Node.js and npm installed on your machine.
+- Firebase project set up with Firestore, Authentication, and Storage enabled.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Installation
 
-### `npm test`
+1. **Clone the repository:**
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+    ```sh
+    git clone https://github.com/your-repo/gym-exercise-app.git
+    cd gym-exercise-app
+    ```
 
-### `npm run build`
+2. **Install dependencies:**
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+    ```sh
+    npm install
+    ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+3. **Set up Firebase:**
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+    - Go to the [Firebase Console](https://console.firebase.google.com/).
+    - Create a new project.
+    - Enable Firestore Database.
+    - Enable Firebase Authentication (Email/Password).
+    - Enable Firebase Storage.
+    - Copy your Firebase configuration settings.
 
-### `npm run eject`
+4. **Create a `.env` file in the root directory and add your Firebase configuration:**
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+    ```plaintext
+    REACT_APP_FIREBASE_API_KEY=your-api-key
+    REACT_APP_FIREBASE_AUTH_DOMAIN=your-auth-domain
+    REACT_APP_FIREBASE_PROJECT_ID=your-project-id
+    REACT_APP_FIREBASE_STORAGE_BUCKET=your-storage-bucket
+    REACT_APP_FIREBASE_MESSAGING_SENDER_ID=your-messaging-sender-id
+    REACT_APP_FIREBASE_APP_ID=your-app-id
+    ```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+5. **Create a Firebase configuration file:**
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+    Create a file named `firebase.js` in the `src` directory and add your Firebase configuration:
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+    ```js
+    // src/firebase.js
+    import { initializeApp } from 'firebase/app';
+    import { getFirestore, collection, getDocs, addDoc } from 'firebase/firestore';
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'firebase/auth';
+    import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
-## Learn More
+    const firebaseConfig = {
+      apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+      authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+      projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+      storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+      messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+      appId: process.env.REACT_APP_FIREBASE_APP_ID
+    };
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+    const storage = getStorage(app);
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+    export { db, collection, getDocs, addDoc, auth, signInWithEmailAndPassword, onAuthStateChanged, signOut, storage, ref, uploadBytes, getDownloadURL };
+    ```
 
-### Code Splitting
+## Running the Project
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+1. **Start the development server:**
 
-### Analyzing the Bundle Size
+    ```sh
+    npm start
+    ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+2. **Open your browser and go to:**
 
-### Making a Progressive Web App
+    ```plaintext
+    http://localhost:3000
+    ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## Project Structure
 
-### Advanced Configuration
+- **src/components/AdminPanel.js**: Component for admin users to add exercises.
+- **src/components/ExerciseList.js**: Component to display the list of exercises.
+- **src/components/ExerciseDetail.js**: Component to display details of a selected exercise with the video.
+- **src/components/Login.js**: Component for admin login.
+- **src/components/PrivateRoute.js**: Component to protect routes that require authentication.
+- **src/firebase.js**: Firebase configuration and initialization.
+- **src/App.js**: Main application component that sets up routing and initializes Firebase.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## Usage
 
-### Deployment
+- **Viewing Exercises**: Anyone can view the list of exercises and the details for each exercise.
+- **Admin Access**: Click on the "Admin" link in the navigation to access the admin panel. You will be redirected to the login page if you are not authenticated.
+- **Logging In**: Use your admin email and password to log in. Once authenticated, you can add new exercises with video links.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## Security Rules (For Testing Only)
 
-### `npm run build` fails to minify
+For testing purposes, you can set your Firestore and Storage rules to be less restrictive. **Remember to secure your rules before going to production.**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Firestore rules:
+
+```plaintext
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /exercises/{exerciseId} {
+      allow read, write: if true;
+    }
+  }
+}

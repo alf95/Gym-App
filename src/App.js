@@ -1,25 +1,54 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import AdminPanel from './components/AdminPanel';
+import ExerciseList from './components/ExerciseList';
+import ExerciseDetail from './components/ExerciseDetail';
+import Login from './components/Login';
+import PrivateRoute from './components/PrivateRoute';
+import { db, collection, getDocs, addDoc, auth, signInWithEmailAndPassword, signOut } from './firebase';
 
-function App() {
+const App = () => {
+  const [exercises, setExercises] = useState([]);
+
+  useEffect(() => {
+    const fetchExercises = async () => {
+      const querySnapshot = await getDocs(collection(db, 'exercises'));
+      const exercisesData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setExercises(exercisesData);
+    };
+
+    fetchExercises();
+  }, []);
+
+  const addExercise = async (exercise) => {
+    const docRef = await addDoc(collection(db, 'exercises'), exercise);
+    setExercises([...exercises, { id: docRef.id, ...exercise }]);
+  };
+
+  const handleLogout = async () => {
+    await signOut(auth);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="container mx-auto p-4">
+        <header className="bg-gray-800 text-white p-4 text-center text-3xl font-bold">
+          Gym Exercise App
+        </header>
+        <nav className="flex justify-center space-x-4 my-4">
+          <Link to="/" className="text-blue-500 hover:text-blue-700">Home</Link>
+          <Link to="/admin" className="text-blue-500 hover:text-blue-700">Admin</Link>
+          <button onClick={handleLogout} className="text-blue-500 hover:text-blue-700">Logout</button>
+        </nav>
+        <Routes>
+          <Route path="/" element={<ExerciseList exercises={exercises} />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/admin" element={<PrivateRoute component={AdminPanel} />} />
+          <Route path="/exercise/:id" element={<ExerciseDetail exercises={exercises} />} />
+        </Routes>
+      </div>
+    </Router>
   );
-}
+};
 
 export default App;
