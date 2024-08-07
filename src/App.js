@@ -9,16 +9,26 @@ import { db, collection, getDocs, addDoc, auth, signInWithEmailAndPassword, sign
 
 const App = () => {
   const [exercises, setExercises] = useState([]);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  useEffect(() => {
-    const fetchExercises = async () => {
-      const querySnapshot = await getDocs(collection(db, 'exercises'));
-      const exercisesData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setExercises(exercisesData);
-    };
+    useEffect(() => {
+        const unsubscribe = auth.onAuthStateChanged(user => {
+            setIsAuthenticated(!!user);
+        });
 
-    fetchExercises();
-  }, []);
+        return () => unsubscribe();
+    }, [isAuthenticated]);
+
+
+    useEffect(() => {
+      const fetchExercises = async () => {
+        const querySnapshot = await getDocs(collection(db, 'exercises'));
+        const exercisesData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setExercises(exercisesData);
+      };
+
+      fetchExercises();
+    }, [exercises]);
 
   const addExercise = async (exercise) => {
     const docRef = await addDoc(collection(db, 'exercises'), exercise);
@@ -38,7 +48,8 @@ const App = () => {
         <nav className="flex justify-center space-x-4 my-4">
           <Link to="/" className="text-blue-600 hover:text-blue-800 font-semibold">Home</Link>
           <Link to="/admin" className="text-blue-600 hover:text-blue-800 font-semibold">Admin</Link>
-          <button onClick={handleLogout} className="text-blue-600 hover:text-blue-800 font-semibold">Logout</button>
+          {isAuthenticated && (<button onClick={handleLogout} className="text-blue-600 hover:text-blue-800 font-semibold">Logout</button>
+          )}
         </nav>
         <Routes>
           <Route path="/" element={<ExerciseList exercises={exercises} />} />
