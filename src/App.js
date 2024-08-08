@@ -54,7 +54,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<ExerciseList exercises={exercises} />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/admin" element={<PrivateRoute component={AdminPanel} />} />
+          <Route path="/admin" element={<PrivateRoute component={AdminPanel} addExercise={addExercise} />} />
           <Route path="/exercise/:id" element={<ExerciseDetail exercises={exercises} />} />
         </Routes>
       </div>

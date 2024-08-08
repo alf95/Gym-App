@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { auth, onAuthStateChanged } from '../firebase';
 
-const PrivateRoute = ({ component: Component }) => {
+const PrivateRoute = ({ component: Component, ...rest }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -19,7 +19,7 @@ const PrivateRoute = ({ component: Component }) => {
     return <div>Loading...</div>;
   }
 
-  return currentUser ? <Component /> : <Navigate to="/login" />;
+  return currentUser ? <Component {...rest} /> : <Navigate to="/login" />;
 };
 
 export default PrivateRoute;
