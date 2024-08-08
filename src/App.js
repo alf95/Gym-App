@@ -17,7 +17,7 @@ const App = () => {
         });
 
         return () => unsubscribe();
-    }, [isAuthenticated]);
+    }, []);
 
 
     useEffect(() => {
@@ -28,7 +28,7 @@ const App = () => {
       };
 
       fetchExercises();
-    }, [exercises]);
+    }, []);
 
   const addExercise = async (exercise) => {
     const docRef = await addDoc(collection(db, 'exercises'), exercise);
